@@ -1,11 +1,15 @@
+using ApiDotNetCase.src.Application;
+using ApiDotNetCase.src.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddTransient<IRepository, Repository>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<WeatherForecastService>();
 
 var app = builder.Build();
 
