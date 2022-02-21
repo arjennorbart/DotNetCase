@@ -52,5 +52,16 @@ namespace ApiDotNetCase.Controllers
 
             return Ok(forecast);
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteForecast(int id)
+        {
+            if (GetWeatherForecastById(id) == null)
+                return NotFound();
+
+            var forecast = await _service.DeleteForecast(id);
+
+            return Ok(forecast);
+        }
     }
 }
