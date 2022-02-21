@@ -1,5 +1,7 @@
 using ApiDotNetCase.src.Application;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ApiDotNetCase.src.Presentation.Controllers.Dto;
 
 namespace ApiDotNetCase.Controllers
 {
@@ -17,10 +19,38 @@ namespace ApiDotNetCase.Controllers
             _service = service;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet(Name = "GetPrediction")]
+        public Task<IEnumerable<WeatherForecast>> GetAll()
         {
-            return _service.GetWeatherForecast();
+            return _service.GetPrediction();
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult> GetWeatherForecastById(int id)
+        {
+            var forecast = await _service.GetWeatherForecast(id);
+            if (forecast == null)
+                return NotFound();
+
+            return Ok(forecast);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateForecast()
+        {
+            var forecast = await _service.CreateNewRandomForecast();
+            return Ok(forecast);
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> UpdateForecast(int id, [FromBody] WeatherForecastDto dto)
+        {
+            if (GetWeatherForecastById(id) == null)
+                return NotFound();
+
+            var forecast = await _service.UpdateForecast(new WeatherForecast(id, dto.Date, dto.TemperatureC, dto.Summary));
+
+            return Ok(forecast);
         }
     }
 }

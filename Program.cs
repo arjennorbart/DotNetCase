@@ -1,10 +1,14 @@
 using ApiDotNetCase.src.Application;
 using ApiDotNetCase.src.Data;
+using ApiDotNetCase.src.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddTransient<IRepository, Repository>();
+builder.Services.AddScoped<IRepository, Repository>();
+builder.Services.AddDbContext<WeatherForecastContext>(o =>
+    o.UseSqlite("Data source=weatherforecast.db"));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
