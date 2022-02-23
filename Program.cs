@@ -4,16 +4,23 @@ using ApiDotNetCase.src.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
 
 // Add services to the container.
-builder.Services.AddScoped<IRepository, Repository>();
-builder.Services.AddDbContext<WeatherForecastContext>(o =>
+services.AddScoped<IRepository, Repository>();
+services.AddDbContext<WeatherForecastContext>(o =>
     o.UseSqlite("Data source=weatherforecast.db"));
-builder.Services.AddControllers();
+services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<WeatherForecastService>();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+services.AddScoped<WeatherForecastService>();
+services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
+{
+    microsoftOptions.ClientId = configuration["App:Id"];
+    microsoftOptions.ClientSecret = configuration["App:Secret"];
+});
 
 var app = builder.Build();
 
@@ -25,6 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

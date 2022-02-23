@@ -1,10 +1,12 @@
 using ApiDotNetCase.src.Application;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ApiDotNetCase.src.Presentation.Controllers.Dto;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace ApiDotNetCase.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
