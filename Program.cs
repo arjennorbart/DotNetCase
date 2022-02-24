@@ -16,10 +16,24 @@ services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 services.AddScoped<WeatherForecastService>();
-services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
+//services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
+//{
+//    microsoftOptions.ClientId = configuration["App:Id"];
+//    microsoftOptions.ClientSecret = configuration["App:Secret"];
+//});
+
+services.AddAuthentication(options =>
 {
-    microsoftOptions.ClientId = configuration["App:Id"];
-    microsoftOptions.ClientSecret = configuration["App:Secret"];
+    options.DefaultScheme = "Cookies";
+    options.DefaultChallengeScheme = "oidc";
+}).AddOpenIdConnect("oidc", options =>
+{
+    options.SignInScheme = "Cookies";
+    options.Authority = "https://login.microsoftonline.com/0a518b3a-b3a4-40f3-b906-dbe9d48dda38/v2.0";
+    options.RequireHttpsMetadata = false;
+    options.ClientId = configuration["App:Id"];
+    options.ClientSecret = configuration["App:Secret"];
+    options.SaveTokens = true;
 });
 
 var app = builder.Build();
