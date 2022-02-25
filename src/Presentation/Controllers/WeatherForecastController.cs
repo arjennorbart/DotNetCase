@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using ApiDotNetCase.src.Presentation.Controllers.Dto;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ApiDotNetCase.Controllers
 {
-    [Authorize]
+    
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -21,12 +23,20 @@ namespace ApiDotNetCase.Controllers
             _service = service;
         }
 
+        [Authorize]
         [HttpGet(Name = "GetPrediction")]
         public Task<IEnumerable<WeatherForecast>> GetAll()
         {
             return _service.GetPrediction();
         }
 
+        [HttpPost("LogOut")]
+        public async Task LogOut()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult> GetWeatherForecastById(int id)
         {
@@ -37,6 +47,7 @@ namespace ApiDotNetCase.Controllers
             return Ok(forecast);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> CreateForecast()
         {
@@ -44,6 +55,7 @@ namespace ApiDotNetCase.Controllers
             return Ok(forecast);
         }
 
+        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateForecast(int id, [FromBody] WeatherForecastDto dto)
         {
@@ -55,6 +67,7 @@ namespace ApiDotNetCase.Controllers
             return Ok(forecast);
         }
 
+        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteForecast(int id)
         {
